@@ -4,6 +4,8 @@ import { redirect } from "next/navigation";
 import { createUser, getUser } from "app/db";
 import { SubmitButton } from "app/submit-button";
 import { neon } from "@neondatabase/serverless";
+import postgres from "postgres";
+import { drizzle } from "drizzle-orm/postgres-js";
 
 export default function Login() {
   async function register(formData: FormData) {
@@ -12,11 +14,14 @@ export default function Login() {
     let password = formData.get("password") as string;
     let user = await getUser(email);
 
+    let client = postgres(`${process.env.POSTGRES_URL!}?sslmode=require`);
+    let db = drizzle(client);
+
     // Connect to the Neon database
-    const sql = neon(`${process.env.DATABASE_URL}`);
-    const comment = formData.get("email");
+    //const sql = neon(`${process.env.DATABASE_URL}`);
+    //const comment = formData.get("email");
     // Insert the comment from the form into the Postgres database
-    await sql("INSERT INTO userMail (email) VALUES ($1)", [comment]);
+    //await sql("INSERT INTO userMail (email) VALUES ($1)", [comment]);
 
     if (user.length > 0) {
       return "User already exists"; // TODO: Handle errors with useFormStatus
