@@ -11,11 +11,11 @@ import NextAuth from "next-auth";
 //import NextAuth from "next-auth";
 // import Providers from "next-auth/providers";
 
-const authHandler = NextAuth({
-  providers: [],
-  secret: process.env.NEXTAUTH_SECRET, // Use an environment variable for security
-});
+// const authHandler = NextAuth({
+//   providers: [],
+//   secret: process.env.NEXTAUTH_SECRET, // Use an environment variable for security
+// });
 
-export default authHandler;
+// export default authHandler;
 
 export { GET, POST } from "app/auth";
