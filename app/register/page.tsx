@@ -1,50 +1,33 @@
 import Link from "next/link";
 import { Form } from "app/form";
 import { redirect } from "next/navigation";
+import { createUser, getUser } from "app/db";
 import { SubmitButton } from "app/submit-button";
+import { neon } from "@neondatabase/serverless";
+import postgres from "postgres";
+import { drizzle } from "drizzle-orm/postgres-js";
 
-
-export default function Signup() {
-  // Function to handle signup logic
+export default function Login() {
   async function register(formData: FormData) {
     "use server";
-    const firstname = formData.get("firstname") as string;
-    const lastname = formData.get("lastname") as string;
-    const email = formData.get("email") as string;
-    const password = formData.get("password") as string;
-    const weight = formData.get("weight") as string;
-    const gender = formData.get("gender") as string;
+    let email = formData.get("email") as string;
+    let password = formData.get("password") as string;
+    let user = await getUser(email);
 
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/signup`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            firstname,
-            lastname,
-            email,
-            password,
-            weight,
-            gender,
-          }),
-        }
-      );
+    let client = postgres(`${process.env.POSTGRES_URL!}?sslmode=require`);
+    let db = drizzle(client);
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Signup failed");
-      }
+    // Connect to the Neon database
+    //const sql = neon(`${process.env.DATABASE_URL}`);
+    //const comment = formData.get("email");
+    // Insert the comment from the form into the Postgres database
+    //await sql("INSERT INTO userMail (email) VALUES ($1)", [comment]);
 
-      const data = await response.json();
-      console.log("Signup successful:", data.message);
-      redirect("/login"); // Redirect to login after successful signup
-    } catch (error: any) {
-      console.error("Error during signup:", error.message);
-      // Optionally handle errors here (e.g., show an error message to the user)
+    if (user.length > 0) {
+      return "User already exists"; // TODO: Handle errors with useFormStatus
+    } else {
+      await createUser(email, password);
+      redirect("/login");
     }
   }
 
@@ -58,89 +41,15 @@ export default function Signup() {
           </p>
         </div>
         <Form action={register}>
-          <div className="px-6 py-4">
-            {/* First Name */}
-            <label className="block mb-2 text-sm font-medium text-gray-700">
-              First Name
-            </label>
-            <input
-              type="text"
-              name="firstname"
-              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm"
-              required
-            />
-
-            {/* Last Name */}
-            <label className="block mt-4 mb-2 text-sm font-medium text-gray-700">
-              Last Name
-            </label>
-            <input
-              type="text"
-              name="lastname"
-              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm"
-              required
-            />
-
-            {/* Email */}
-            <label className="block mt-4 mb-2 text-sm font-medium text-gray-700">
-              Email
-            </label>
-            <input
-              type="email"
-              name="email"
-              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm"
-              required
-            />
-
-            {/* Password */}
-            <label className="block mt-4 mb-2 text-sm font-medium text-gray-700">
-              Password
-            </label>
-            <input
-              type="password"
-              name="password"
-              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm"
-              required
-            />
-
-            {/* Weight */}
-            <label className="block mt-4 mb-2 text-sm font-medium text-gray-700">
-              Weight (in lbs)
-            </label>
-            <input
-              type="number"
-              name="weight"
-              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm"
-              required
-            />
-
-            {/* Gender */}
-            <label className="block mt-4 mb-2 text-sm font-medium text-gray-700">
-              Gender
-            </label>
-            <select
-              name="gender"
-              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm"
-              required
-            >
-              <option value="">Select...</option>
-              <option value="M">Male</option>
-              <option value="F">Female</option>
-              <option value="O">Other</option>
-            </select>
-          </div>
-
-          {/* Submit Button */}
           <SubmitButton>Sign Up</SubmitButton>
+          <p className="text-center text-sm text-gray-600">
+            {"Already have an account? "}
+            <Link href="/login" className="font-semibold text-gray-800">
+              Sign in
+            </Link>
+            {" instead."}
+          </p>
         </Form>
-
-        <p className="text-center text-sm text-gray-600">
-          {"Already have an account? "}
-          <Link href="/login" className="font-semibold text-gray-800">
-            Sign in
-          </Link>
-          {" instead."}
-        </p>
       </div>
     </div>
   );

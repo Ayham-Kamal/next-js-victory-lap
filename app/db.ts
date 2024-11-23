@@ -1,8 +1,8 @@
-import { drizzle } from 'drizzle-orm/postgres-js';
-import { pgTable, serial, varchar } from 'drizzle-orm/pg-core';
-import { eq } from 'drizzle-orm';
-import postgres from 'postgres';
-import { genSaltSync, hashSync } from 'bcrypt-ts';
+import { drizzle } from "drizzle-orm/postgres-js";
+import { pgTable, serial, varchar } from "drizzle-orm/pg-core";
+import { eq } from "drizzle-orm";
+import postgres from "postgres";
+import { genSaltSync, hashSync } from "bcrypt-ts";
 
 // Optionally, if not using email/pass login, you can
 // use the Drizzle adapter for Auth.js / NextAuth
@@ -40,11 +40,19 @@ async function ensureTableExists() {
       );`;
   }
 
-  const table = pgTable('User', {
-    id: serial('id').primaryKey(),
-    email: varchar('email', { length: 64 }),
-    password: varchar('password', { length: 64 }),
+  const table = pgTable("User", {
+    id: serial("id").primaryKey(),
+    email: varchar("email", { length: 64 }),
+    password: varchar("password", { length: 64 }),
   });
 
   return table;
+}
+
+// Testing
+export async function fetchUserName() {
+  const result = await client`
+  SELECT id, email FROM public."User"`;
+
+  return result;
 }
