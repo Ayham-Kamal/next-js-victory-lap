@@ -1,5 +1,5 @@
 import { drizzle } from "drizzle-orm/postgres-js";
-import { pgTable, serial, varchar } from "drizzle-orm/pg-core";
+import { pgTable, serial, varchar, numeric } from "drizzle-orm/pg-core";
 import { eq } from "drizzle-orm";
 import postgres from "postgres";
 import { genSaltSync, hashSync } from "bcrypt-ts";
@@ -15,12 +15,24 @@ export async function getUser(email: string) {
   return await db.select().from(users).where(eq(users.email, email));
 }
 
-export async function createUser(email: string, password: string) {
+export async function createUser(
+  email: string,
+  password: string,
+  firstName: string,
+  lastName: string,
+  weight: number,
+  gender: string
+) {
   const users = await ensureTableExists();
   let salt = genSaltSync(10);
   let hash = hashSync(password, salt);
 
-  return await db.insert(users).values({ email, password: hash });
+  // return await db.insert(users).values({ email, password: hash }); before editing
+  await db.insert(users).values({ email, password: hash });
+
+  //return await db.insert(table).values({ firstName, lastName, weight, gender });
+
+  return await client`INSERT INTO public."users" (firstname, lastname, weight, gender) VALUES (${firstName}, ${lastName}, ${weight}, ${gender})`;
 }
 
 async function ensureTableExists() {

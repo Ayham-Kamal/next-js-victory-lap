@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Form } from "app/form";
+import { SignUpForm } from "app/signUpForm";
 import { redirect } from "next/navigation";
 import { createUser, getUser } from "app/db";
 import { SubmitButton } from "app/submit-button";
@@ -12,6 +12,12 @@ export default function Login() {
     "use server";
     let email = formData.get("email") as string;
     let password = formData.get("password") as string;
+    // New
+    let firstName = formData.get("firstname") as string;
+    let lastName = formData.get("lastname") as string;
+    let weight = Number(formData.get("weight"));
+    let gender = formData.get("gender") as string;
+
     let user = await getUser(email);
 
     let client = postgres(`${process.env.POSTGRES_URL!}?sslmode=require`);
@@ -26,7 +32,7 @@ export default function Login() {
     if (user.length > 0) {
       return "User already exists"; // TODO: Handle errors with useFormStatus
     } else {
-      await createUser(email, password);
+      await createUser(email, password, firstName, lastName, weight, gender); // was (email, password)
       redirect("/login");
     }
   }
@@ -40,7 +46,7 @@ export default function Login() {
             Create an account with your email and password
           </p>
         </div>
-        <Form action={register}>
+        <SignUpForm action={register}>
           <SubmitButton>Sign Up</SubmitButton>
           <p className="text-center text-sm text-gray-600">
             {"Already have an account? "}
@@ -49,7 +55,7 @@ export default function Login() {
             </Link>
             {" instead."}
           </p>
-        </Form>
+        </SignUpForm>
       </div>
     </div>
   );
