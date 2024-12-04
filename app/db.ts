@@ -68,3 +68,19 @@ export async function fetchUserName() {
 
   return result;
 }
+
+// Get user ID:
+export async function fetchUserID(userEmail: string) {
+  // was any
+  const result = await client`
+  SELECT id FROM public."User" WHERE email = ${userEmail};`;
+
+  return result;
+}
+
+export async function fetchName(userID: number) {
+  const result = await client`
+  SELECT firstname, lastname FROM public."users" WHERE userid = ${userID};`;
+
+  return result;
+}
