@@ -1,0 +1,212 @@
+.dashboardContainer {
+  display: flex;
+  height: 100vh;
+  font-family: Arial, sans-serif;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 20%;
+  background-color: #f4f4f4;
+  padding: 20px;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar h2 {
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.navList {
+  list-style-type: none;
+  padding: 0;
+}
+
+.navList li {
+  margin: 15px 0;
+  font-size: 1rem;
+  color: #555;
+  cursor: pointer;
+}
+
+.navList li:hover {
+  color: #ff4500;
+  font-weight: bold;
+}
+
+/* Main Content */
+.mainContent {
+  flex: 1;
+  padding: 20px 40px;
+  background-color: #fafafa;
+  overflow-y: auto;
+}
+
+/* Header */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.header h1 {
+  font-size: 1.8rem;
+  color: #222;
+}
+
+.header p {
+  font-size: 1rem;
+  color: #666;
+}
+
+.searchBar {
+  padding: 10px;
+  border-radius: 20px;
+  border: 1px solid #ddd;
+  width: 250px;
+}
+
+/* Stats Section */
+.statsSection {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.statCard {
+  flex: 1;
+  margin: 0 10px;
+  padding: 20px;
+  border-radius: 15px;
+  background-color: #fff;
+  text-align: center;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.statCard h3 {
+  font-size: 1.2rem;
+  color: #333;
+}
+
+.statCard p {
+  font-size: 1.5rem;
+  color: #ff4500;
+  margin-top: 10px;
+}
+
+/* Milestones Section */
+.milestoneSection {
+  margin-bottom: 20px;
+}
+
+.milestoneSection h2 {
+  margin-bottom: 10px;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.milestones {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.milestoneCard {
+  flex: 1;
+  padding: 15px;
+  background-color: #f7f7f7;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.progressBar {
+  height: 10px;
+  background-color: #ddd;
+  margin: 15px 0;
+  border-radius: 5px;
+}
+
+.progressFill {
+  height: 100%;
+  background-color: #ff4500;
+  border-radius: 5px;
+}
+
+/* Exercise Section */
+.exerciseSection {
+  margin-bottom: 20px;
+}
+
+.exerciseSection h2 {
+  margin-bottom: 10px;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.exerciseTable {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fff;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.exerciseTable th,
+.exerciseTable td {
+  padding: 15px;
+  text-align: center;
+  border: 1px solid #ddd;
+}
+
+.exerciseTable th {
+  background-color: #f4f4f4;
+  font-size: 1rem;
+  color: #333;
+}
+
+.exerciseTable td {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+/* Trainer Section */
+.trainerSection {
+  margin-bottom: 20px;
+}
+
+.trainerSection h2 {
+  margin-bottom: 10px;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.trainerCards {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.trainerCard {
+  flex: 1;
+  padding: 15px;
+  background-color: #fff;
+  text-align: center;
+  border-radius: 10px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.trainerImage {
+  border-radius: 50%;
+  margin-bottom: 10px;
+  width: auto;
+  height: auto;
+}
+
+.trainerCard h3 {
+  font-size: 1rem;
+  color: #333;
+}
