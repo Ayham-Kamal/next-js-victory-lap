@@ -3,7 +3,8 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import styles from "@/app/dashboard/Dashboard.module.css";
 import { User, Stats, Exercise, Milestone } from "./types";
-
+import { LogExerciseForm } from "./logExerciseForm";
+import Link from "next/link";
 const mockData = {
   user: { id: 1, name: "Mohammad" },
   stats: {
@@ -11,11 +12,6 @@ const mockData = {
     caloriesBurned: 2400,
     weight: 62,
   },
-  exercises: [
-    { name: "Boxing & Chest", reps: "15 Into 15 Repetition", sets: 26, result: "75%" },
-    { name: "Weight & Lifting", reps: "30 Into 10 Repetition", sets: 26, result: "65%" },
-    { name: "Biceps & Lowercase", reps: "45 Into 15 Repetition", sets: 26, result: "98%" },
-  ],
   milestones: {
     lifting: { progress: 77, unit: "0.77 lbs" },
     cycling: { progress: 50, unit: "2.5 miles" },
@@ -23,11 +19,41 @@ const mockData = {
   },
 };
 
+const initialWorkouts = [
+  {
+    category: "Upper Body",
+    muscle_group: "Chest",
+    workout: "Bench Press",
+    equipment: "Barbell",
+    sets: 4,
+    reps: 10,
+    weight: 30
+  },
+  {
+    category: "Cardio",
+    muscle_group: "Full Body",
+    workout: "Running",
+    equipment: "Treadmill",
+    sets: 1,
+    reps: 30, // minutes
+    weight: 0
+  },
+  {
+    category: "Flexibility",
+    muscle_group: "Legs",
+    workout: "Yoga Stretch",
+    equipment: "None",
+    sets: 3,
+    reps: 15,
+    weight: 0
+  },
+];
+
 const Dashboard: React.FC = () => {
+  const [recentWorkouts, setRecentWorkouts] = useState(initialWorkouts);
   const [data, setData] = useState<{
     user: User;
     stats: Stats;
-    exercises: Exercise[];
     milestones: Record<string, Milestone>;
   } | null>(null);
 
@@ -36,11 +62,34 @@ const Dashboard: React.FC = () => {
     setTimeout(() => setData(mockData), 1000);
   }, []);
 
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+  
+    // Extract form values
+    const formObject = Object.fromEntries(formData.entries());
+    const newWorkout: Exercise = {
+      category: formObject.category as string,
+      muscle_group: formObject.muscle_group as string, // Use submitted muscle_group directly
+      workout: formObject.workout as string,
+      equipment: formObject.equipment as string,
+      sets: Number(formObject.sets),
+      reps: Number(formObject.reps),
+      weight: Number(formObject.weight),
+    };
+  
+    // Add new workout to the state
+    setRecentWorkouts((prevWorkouts) => [...prevWorkouts, newWorkout]);
+    event.currentTarget.reset();
+  };
+  
+  
+
   if (!data) {
     return <div>Loading...</div>;
   }
 
-  const { user, stats, exercises, milestones } = data;
+  const { user, stats, milestones } = data;
 
   return (
     <div className={styles.dashboardContainer}>
@@ -80,25 +129,76 @@ const Dashboard: React.FC = () => {
         </section>
 
         <section className={styles.exerciseSection}>
-          <h2>Daily Exercise</h2>
-          <ExerciseTable exercises={exercises} />
+          <div className="flex flex-row items-start justify-center space-x-6">
+            {/* Log Exercise Form */}
+            <div className="w-full max-w-md p-6 bg-white rounded-lg shadow-md">
+              <LogExerciseForm onSubmit={handleSubmit}>
+                <button
+                  type="submit"
+                  className="w-full rounded-md bg-black py-2 px-4 text-white shadow-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2"
+                >
+                  Log Exercise
+                </button>
+              </LogExerciseForm>
+            </div>
+
+            {/* Recent Workout Table */}
+            <div className="flex-grow w-full max-w-5xl p-6 bg-gray-50 rounded-lg shadow-md">
+              <h3 className="text-lg font-semibold text-gray-800 mb-4">Recent Workout</h3>
+              {recentWorkouts.length > 0 ? (
+                <div className="overflow-x-auto">
+                  <table className="w-full table-auto border-collapse border border-gray-300 text-gray-600">
+                    <thead>
+                      <tr className="bg-gray-100">
+                        <th className="border border-gray-300 px-4 py-2 text-left">Muscle Group</th>
+                        <th className="border border-gray-300 px-4 py-2 text-left">Workout</th>
+                        <th className="border border-gray-300 px-4 py-2 text-left">Equipment</th>
+                        <th className="border border-gray-300 px-4 py-2 text-left">Sets</th>
+                        <th className="border border-gray-300 px-4 py-2 text-left">Reps</th>
+                        <th className="border border-gray-300 px-4 py-2 text-left">Weight</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {recentWorkouts.map((workout, index) => (
+                        <tr key={index} className="bg-white even:bg-gray-50">
+                          <td className="border border-gray-300 px-4 py-2">{workout.muscle_group}</td>
+                          <td className="border border-gray-300 px-4 py-2">{workout.workout}</td>
+                          <td className="border border-gray-300 px-4 py-2">{workout.equipment}</td>
+                          <td className="border border-gray-300 px-4 py-2">{workout.sets}</td>
+                          <td className="border border-gray-300 px-4 py-2">
+                            {workout.category === "Cardio" ? `${workout.reps} mins` : workout.reps}
+                          </td>
+                          <td className="border border-gray-300 px-4 py-2">{workout.weight}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ) : (
+                <p className="text-gray-500">No workouts logged yet.</p>
+              )}
+            </div>
+          </div>
         </section>
 
         <section className={styles.trainerSection}>
-          <h2>Our Trainers</h2>
-          <div className={styles.trainerCards}>
-            <TrainerCard
-              image="/trainer2.jpg"
-              name="Kopper Kit"
-              description="Weightlifting and Muscle building."
-            />
-            <TrainerCard
-              image="/trainer1.jpg"
-              name="Jane Smith"
-              description="Cardio and Yoga."
-            />
-          </div>
-        </section>
+  <h2>Our Trainers</h2>
+  <p>Get personalized guidance from our certified trainers!</p>
+  <div className={styles.trainerCards}>
+    <TrainerCard
+      image="/trainer2.jpg"
+      name="Kopper Kit"
+      description="Weightlifting and Muscle building."
+      bio="Hi, I'm Kopper Kit, your personal trainer and fitness enthusiast. I specialize in weightlifting and muscle building. When I'm not in the gym, you can find me hiking or playing guitar."
+    />
+    <TrainerCard
+      image="/trainer1.jpg"
+      name="Jane Smith"
+      description="Cardio and Yoga."
+      bio="Hello, I'm Jane Smith, a certified yoga and cardio instructor. I'm passionate about helping people achieve their fitness goals through mindful movement and healthy habits. In my free time, I enjoy reading and gardening."
+    />
+  </div>
+</section>
       </main>
     </div>
   );
@@ -122,38 +222,17 @@ const MilestoneCard: React.FC<{ name: string; milestone: Milestone }> = ({ name,
   </div>
 );
 
-const ExerciseTable: React.FC<{ exercises: Exercise[] }> = ({ exercises }) => (
-  <table className={styles.exerciseTable}>
-    <thead>
-      <tr>
-        <th>Name of Exercise</th>
-        <th>Reps</th>
-        <th>Sets</th>
-        <th>Result</th>
-      </tr>
-    </thead>
-    <tbody>
-      {exercises.map((exercise, index) => (
-        <tr key={index}>
-          <td>{exercise.name}</td>
-          <td>{exercise.reps}</td>
-          <td>{exercise.sets}</td>
-          <td>{exercise.result}</td>
-        </tr>
-      ))}
-    </tbody>
-  </table>
-);
-
-const TrainerCard: React.FC<{ image: string; name: string; description: string }> = ({
+const TrainerCard: React.FC<{ image: string; name: string; description: string; bio: string }> = ({
   image,
   name,
   description,
+  bio,
 }) => (
   <div className={styles.trainerCard}>
     <Image src={image} alt={name} width={150} height={150} className={styles.trainerImage} />
-    <h3>{name}</h3>
-    <p>{description}</p>
+    <h3><strong>{name}</strong></h3>
+    <p><strong>{description}</strong></p>
+    <p className={styles.trainerBio}>{bio}</p>
   </div>
 );
 

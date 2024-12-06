@@ -136,8 +136,13 @@
 }
 
 /* Exercise Section */
+/* Updated Exercise Section */
 .exerciseSection {
   margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
 }
 
 .exerciseSection h2 {
@@ -146,32 +151,66 @@
   color: #333;
 }
 
-.exerciseTable {
+.exerciseSection .flex {
+  display: flex;
+  flex-direction: row; /* Horizontal layout */
+  gap: 20px; /* Space between the form and the recent workout div */
+}
+
+.exerciseSection .recentWorkout {
   width: 100%;
-  border-collapse: collapse;
-  background-color: #fff;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  max-width: 400px;
+  padding: 20px;
+  background-color: #f9fafb; /* Light gray background */
   border-radius: 10px;
-  overflow: hidden;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.exerciseTable th,
-.exerciseTable td {
-  padding: 15px;
+/* Form Container Styling */
+.exerciseSection .exerciseFormContainer {
+  width: 100%;
+  max-width: 400px; /* Reduced width */
+  padding: 15px; /* Reduced padding */
+  background-color: #fff;
+  border-radius: 10px; /* Slightly reduced radius */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   text-align: center;
+}
+
+/* Form Element Styling */
+.exerciseFormContainer form select,
+.exerciseFormContainer form input {
+  width: 100%;
+  padding: 10px; /* Reduced padding */
+  margin-bottom: 10px; /* Reduced margin */
+  border-radius: 6px; /* Slightly reduced radius */
   border: 1px solid #ddd;
+  font-size: 0.9rem; /* Reduced font size */
 }
 
-.exerciseTable th {
-  background-color: #f4f4f4;
-  font-size: 1rem;
-  color: #333;
+/* Button Styling */
+.exerciseFormContainer form button {
+  width: 100%;
+  padding: 10px; /* Reduced padding */
+  background-color: #ff4500;
+  color: white;
+  font-size: 0.9rem; /* Reduced font size */
+  border: none;
+  border-radius: 6px; /* Slightly reduced radius */
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
-.exerciseTable td {
-  font-size: 0.9rem;
-  color: #666;
+.exerciseFormContainer form button:hover {
+  background-color: #e63e00;
 }
+
+.exerciseFormContainer form button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(255, 69, 0, 0.2); /* Adjusted shadow size */
+}
+
+
 
 /* Trainer Section */
 .trainerSection {
@@ -204,9 +243,23 @@
   margin-bottom: 10px;
   width: auto;
   height: auto;
+  margin-left: auto;
+  margin-right: auto;
+  width: 30%;
 }
 
 .trainerCard h3 {
   font-size: 1rem;
   color: #333;
+}
+
+.trainerCard .trainerBio {
+  display: none; /* Initially hidden */
+}
+
+/* Media query for full screen or large screens */
+@media (min-width: 768px) {
+  .trainerCard:hover .trainerBio {
+    display: block; /* Show bio on hover */
+  }
 }
