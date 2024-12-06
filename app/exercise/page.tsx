@@ -1,272 +1,171 @@
 "use client";
-import { useState } from "react";
+import { LogExerciseForm } from "./logExerciseForm";
 
-type Category = "Upper Body" | "Lower Body" | "Core";
-type MuscleGroup =
-  | "Chest"
-  | "Back"
-  | "Shoulders"
-  | "Arms"
-  | "Legs"
-  | "Glutes"
-  | "Calves"
-  | "Abs"
-  | "Obliques";
-type Equipment = string;
-
-interface SetData {
-  weight: number;
-  reps: number;
-}
-
-interface Workout {
-  equipment: Equipment;
-  sets: SetData[];
-}
-
-const ExercisePage: React.FC = () => {
-  const [category, setCategory] = useState<Category | "">("");
-  const [muscleGroup, setMuscleGroup] = useState<MuscleGroup | "">("");
-  const [equipment, setEquipment] = useState<Equipment | "">("");
-  const [numSets, setNumSets] = useState<number>(0);
-  const [workouts, setWorkouts] = useState<Workout[]>([]);
-
-  const categories: Record<Category, MuscleGroup[]> = {
-    "Upper Body": ["Chest", "Back", "Shoulders", "Arms"],
-    "Lower Body": ["Legs", "Glutes", "Calves"],
-    "Core": ["Abs", "Obliques"],
-  };
-
-  const equipmentOptions: Record<MuscleGroup, Equipment[]> = {
-    Chest: ["Bench Press", "Dumbbells", "Push-up Bars"],
-    Back: ["Pull-up Bar", "Lat Pulldown Machine", "Rowing Machine"],
-    Shoulders: ["Dumbbells", "Shoulder Press Machine", "Resistance Bands"],
-    Arms: ["Dumbbells", "EZ Bar", "Cable Machine"],
-    Legs: ["Squat Rack", "Leg Press Machine", "Kettlebells"],
-    Glutes: ["Hip Thrust Machine", "Resistance Bands", "Barbell"],
-    Calves: ["Calf Raise Machine", "Dumbbells", "Leg Press Machine"],
-    Abs: ["Ab Wheel", "Plank Mat", "Sit-up Bench"],
-    Obliques: ["Medicine Ball", "Cable Machine", "Dumbbells"],
-  };
-
-  const handleAddWorkout = () => {
-    if (equipment && numSets > 0) {
-      const sets: SetData[] = Array.from({ length: numSets }, () => ({ weight: 0, reps: 0 }));
-      setWorkouts([...workouts, { equipment, sets }]);
-    }
-  };
-  
-
-  const handleSetChange = (
-    workoutIndex: number,
-    setIndex: number,
-    field: keyof SetData,
-    value: number
-  ) => {
-    const updatedWorkouts = [...workouts];
-    updatedWorkouts[workoutIndex].sets[setIndex][field] = value;
-    setWorkouts(updatedWorkouts);
+export default function ExercisePage() {
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    const data = Object.fromEntries(formData);
+    console.log(data); // Handle form data
   };
 
   return (
-    <div style={styles.container}>
-      <h1>Exercise Planner</h1>
-      <div style={styles.card}>
-        <label style={styles.label}>
-          Select Category:
-          <select
-            style={styles.select}
-            value={category}
-            onChange={(e) => {
-              const selectedCategory = e.target.value as Category;
-              setCategory(selectedCategory);
-              setMuscleGroup("");
-              setEquipment("");
-              setNumSets(0);
-            }}
-          >
-            <option value="">-- Choose Category --</option>
-            {Object.keys(categories).map((cat) => (
-              <option key={cat} value={cat}>
-                {cat}
-              </option>
-            ))}
-          </select>
-        </label>
-
-        {category && (
-          <label style={styles.label}>
-            Select Muscle Group:
-            <select
-              style={styles.select}
-              value={muscleGroup}
-              onChange={(e) => {
-                const selectedMuscleGroup = e.target.value as MuscleGroup;
-                setMuscleGroup(selectedMuscleGroup);
-                setEquipment("");
-                setNumSets(0);
-              }}
-            >
-              <option value="">-- Choose Muscle Group --</option>
-              {categories[category].map((group) => (
-                <option key={group} value={group}>
-                  {group}
-                </option>
-              ))}
-            </select>
-          </label>
-        )}
-
-        {muscleGroup && (
-          <label style={styles.label}>
-            Select Equipment:
-            <select
-              style={styles.select}
-              value={equipment}
-              onChange={(e) => {
-                setEquipment(e.target.value);
-                setNumSets(0);
-              }}
-            >
-              <option value="">-- Choose Equipment --</option>
-              {equipmentOptions[muscleGroup].map((equip) => (
-                <option key={equip} value={equip}>
-                  {equip}
-                </option>
-              ))}
-            </select>
-          </label>
-        )}
-
-        {equipment && (
-          <label style={styles.label}>
-            Select Number of Sets (1-5):
-            <select
-              style={styles.select}
-              value={numSets}
-              onChange={(e) => setNumSets(Number(e.target.value))}
-            >
-              <option value="">-- Choose Sets --</option>
-              {[1, 2, 3, 4, 5].map((n) => (
-                <option key={n} value={n}>
-                  {n}
-                </option>
-              ))}
-            </select>
-          </label>
-        )}
-
-        {numSets > 0 && (
-          <button style={styles.button} onClick={handleAddWorkout}>
-            Add Workout
-          </button>
-        )}
-      </div>
-
-      {workouts.length > 0 && (
-        <div>
-          <h2 style={styles.subTitle}>Workout Details</h2>
-          {workouts.map((workout, workoutIndex) => (
-            <div key={workoutIndex} style={styles.workoutCard}>
-              <h3>{workout.equipment}</h3>
-              {workout.sets.map((set, setIndex) => (
-                <div key={setIndex} style={styles.setRow}>
-                  <label style={styles.rowLabel}>
-                    Set {setIndex + 1} Weight (kg):
-                    <input
-                      style={styles.input}
-                      type="number"
-                      value={set.weight}
-                      onChange={(e) =>
-                        handleSetChange(
-                          workoutIndex,
-                          setIndex,
-                          "weight",
-                          Number(e.target.value)
-                        )
-                      }
-                    />
-                  </label>
-                  <label style={styles.rowLabel}>
-                    Reps:
-                    <input
-                      style={styles.input}
-                      type="number"
-                      value={set.reps}
-                      onChange={(e) =>
-                        handleSetChange(
-                          workoutIndex,
-                          setIndex,
-                          "reps",
-                          Number(e.target.value)
-                        )
-                      }
-                    />
-                  </label>
-                </div>
-              ))}
-            </div>
-          ))}
-        </div>
-      )}
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+      <LogExerciseForm onSubmit={handleSubmit}>
+        <button
+          type="submit"
+          className="w-full rounded-md bg-black py-2 px-4 text-white shadow-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2"
+        >
+          Log Exercise
+        </button>
+      </LogExerciseForm>
     </div>
   );
-};
+}
 
-const styles = {
-  container: {
-    padding: "20px",
-    fontFamily: "Arial, sans-serif",
-  },
-  title: {
-    textAlign: "center",
-    marginBottom: "20px",
-  },
-  subTitle: {
-    marginTop: "20px",
-    marginBottom: "10px",
-  },
-  card: {
-    padding: "15px",
-    border: "1px solid #ccc",
-    borderRadius: "8px",
-    marginBottom: "20px",
-  },
-  workoutCard: {
-    background: "#f9f9f9",
-    padding: "15px",
-    borderRadius: "8px",
-    marginBottom: "15px",
-  },
-  label: {
-    display: "block",
-    marginBottom: "10px",
-  },
-  select: {
-    width: "100%",
-    padding: "8px",
-    marginBottom: "15px",
-  },
-  button: {
-    backgroundColor: "#007bff",
-    color: "white",
-    padding: "10px",
-    border: "none",
-    borderRadius: "5px",
-    cursor: "pointer",
-  },
-  setRow: {
-    display: "flex",
-    justifyContent: "space-between",
-    marginBottom: "10px",
-  },
-  rowLabel: {
-    marginRight: "15px",
-  },
-  input: {
-    width: "50px",
-    padding: "5px",
-  },
-};
+// "use client";
+// import { useState } from "react";
 
-export default ExercisePage;
+// type ExerciseData = {
+//   categories: Record<string, string[]>;
+//   equipment: Record<string, string[]>;
+// };
+
+// const exerciseData: ExerciseData = {
+//   categories: {
+//     "Upper Body": ["Chest", "Back", "Shoulders", "Arms"],
+//     "Lower Body": ["Quadriceps", "Hamstrings", "Glutes", "Calves"],
+//     Core: ["Abs", "Obliques", "Lower Back"],
+//   },
+//   equipment: {
+//     Chest: ["Dumbbells", "Barbell", "Cable Machine", "Bodyweight"],
+//     Back: ["Pull-up Bar", "Barbell", "Cable Machine", "Resistance Bands"],
+//     // Add more mappings for each muscle group
+//   },
+// };
+
+// const LogExercise: React.FC = () => {
+//   const [selectedCategory, setSelectedCategory] = useState<string>("");
+//   const [selectedMuscleGroup, setSelectedMuscleGroup] = useState<string>("");
+//   const [selectedEquipment, setSelectedEquipment] = useState<string>("");
+//   const [sets, setSets] = useState<number | "">("");
+//   const [reps, setReps] = useState<number | "">("");
+
+//   const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+//     setSelectedCategory(e.target.value);
+//     setSelectedMuscleGroup(""); // Reset dependent state
+//     setSelectedEquipment("");
+//   };
+
+//   const handleMuscleGroupChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+//     setSelectedMuscleGroup(e.target.value);
+//     setSelectedEquipment("");
+//   };
+
+//   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+//     e.preventDefault();
+//     if (
+//       !selectedCategory ||
+//       !selectedMuscleGroup ||
+//       !selectedEquipment ||
+//       !sets ||
+//       !reps
+//     ) {
+//       alert("Please fill out all fields!");
+//       return;
+//     }
+//     console.log({
+//       category: selectedCategory,
+//       muscleGroup: selectedMuscleGroup,
+//       equipment: selectedEquipment,
+//       sets,
+//       reps,
+//     });
+//     // Save data to your backend or local state
+//   };
+
+//   return (
+//     <div>
+//       <h1>Log Exercise</h1>
+//       <form onSubmit={handleSubmit}>
+//         {/* Category Selection */}
+//         <label>
+//           Category:
+//           <select value={selectedCategory} onChange={handleCategoryChange}>
+//             <option value="">Select Category</option>
+//             {Object.keys(exerciseData.categories).map((category) => (
+//               <option key={category} value={category}>
+//                 {category}
+//               </option>
+//             ))}
+//           </select>
+//         </label>
+
+//         {/* Muscle Group Selection */}
+//         {selectedCategory && (
+//           <label>
+//             Muscle Group:
+//             <select
+//               value={selectedMuscleGroup}
+//               onChange={handleMuscleGroupChange}
+//             >
+//               <option value="">Select Muscle Group</option>
+//               {exerciseData.categories[selectedCategory].map((group) => (
+//                 <option key={group} value={group}>
+//                   {group}
+//                 </option>
+//               ))}
+//             </select>
+//           </label>
+//         )}
+
+//         {/* Equipment Selection */}
+//         {selectedMuscleGroup && (
+//           <label>
+//             Equipment:
+//             <select
+//               value={selectedEquipment}
+//               onChange={(e) => setSelectedEquipment(e.target.value)}
+//             >
+//               <option value="">Select Equipment</option>
+//               {exerciseData.equipment[selectedMuscleGroup]?.map((equip) => (
+//                 <option key={equip} value={equip}>
+//                   {equip}
+//                 </option>
+//               ))}
+//             </select>
+//           </label>
+//         )}
+
+//         {/* Sets and Reps */}
+//         <label>
+//           Sets:
+//           <input
+//             type="number"
+//             value={sets}
+//             onChange={(e) =>
+//               setSets(e.target.value === "" ? "" : Number(e.target.value))
+//             }
+//             min="1"
+//           />
+//         </label>
+
+//         <label>
+//           Reps:
+//           <input
+//             type="number"
+//             value={reps}
+//             onChange={(e) =>
+//               setReps(e.target.value === "" ? "" : Number(e.target.value))
+//             }
+//             min="1"
+//           />
+//         </label>
+
+//         <button type="submit">Log Exercise</button>
+//       </form>
+//     </div>
+//   );
+// };
+
+// export default LogExercise;
