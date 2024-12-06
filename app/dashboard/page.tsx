@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import styles from "@/app/dashboard/Dashboard.module.css";
-import { User, Stats, Exercise, Milestone } from "./types";
+import { User, Stats, Milestone } from "./types";
 import { LogExerciseForm } from "./logExerciseForm";
 import Link from "next/link";
 const mockData = {
@@ -19,7 +19,18 @@ const mockData = {
   },
 };
 
-const initialWorkouts = [
+// Ensure type consistency
+type Exercise = {
+  category: string;
+  muscle_group: string;
+  workout: string;
+  equipment: string;
+  sets: number;
+  reps: number;
+  weight: number;
+};
+
+const initialWorkouts: Exercise[] = [
   {
     category: "Upper Body",
     muscle_group: "Chest",
@@ -27,7 +38,7 @@ const initialWorkouts = [
     equipment: "Barbell",
     sets: 4,
     reps: 10,
-    weight: 30
+    weight: 30,
   },
   {
     category: "Cardio",
@@ -36,7 +47,7 @@ const initialWorkouts = [
     equipment: "Treadmill",
     sets: 1,
     reps: 30, // minutes
-    weight: 0
+    weight: 0,
   },
   {
     category: "Flexibility",
@@ -45,12 +56,12 @@ const initialWorkouts = [
     equipment: "None",
     sets: 3,
     reps: 15,
-    weight: 0
+    weight: 0,
   },
 ];
 
 const Dashboard: React.FC = () => {
-  const [recentWorkouts, setRecentWorkouts] = useState(initialWorkouts);
+  const [recentWorkouts, setRecentWorkouts] = useState<Exercise[]>(initialWorkouts);
   const [data, setData] = useState<{
     user: User;
     stats: Stats;
@@ -65,25 +76,23 @@ const Dashboard: React.FC = () => {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-  
+
     // Extract form values
     const formObject = Object.fromEntries(formData.entries());
     const newWorkout: Exercise = {
       category: formObject.category as string,
-      muscle_group: formObject.muscle_group as string, // Use submitted muscle_group directly
+      muscle_group: formObject.muscle_group as string,
       workout: formObject.workout as string,
       equipment: formObject.equipment as string,
       sets: Number(formObject.sets),
       reps: Number(formObject.reps),
       weight: Number(formObject.weight),
     };
-  
+
     // Add new workout to the state
     setRecentWorkouts((prevWorkouts) => [...prevWorkouts, newWorkout]);
     event.currentTarget.reset();
   };
-  
-  
 
   if (!data) {
     return <div>Loading...</div>;

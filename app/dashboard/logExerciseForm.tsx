@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 
-const workoutNamesDict = {
+const workoutNamesDict: Record<string, string[]> = {
   Chest: ["Bench Press", "Push Ups", "Pec Flies"],
   Back: ["Lat pulls", "Rows"],
   Shoulders: ["Shoulder Press"],
@@ -16,7 +16,7 @@ const workoutNamesDict = {
   Cardio: ["Running", "Cycling", "Jump Rope"],
 };
 
-const workoutEquipment = {
+const workoutEquipment: Record<string, string[]> = {
   PecFlies: ["Dumbbells"],
   Dips: ["None"],
   BenchPress: ["Barbell", "Dumbbells"],
@@ -40,7 +40,7 @@ const workoutEquipment = {
   Crunches: ["None"],
 };
 
-const broadToSpecific = {
+const broadToSpecific: Record<string, string[]>= {
   UpperBody: ["Chest", "Back", "Shoulders", "Biceps", "Triceps"],
   LowerBody: ["Quads", "Hamstrings", "Glutes", "Calves"],
   Core: ["Core"],
