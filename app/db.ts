@@ -106,3 +106,12 @@ export async function updateInfo(
   await client`UPDATE public."users" SET firstname = ${firstName}, lastname = ${lastName}, weight = ${weight}, gender = ${gender}
   WHERE userid = ${userID};`;
 }
+
+export async function fetchClass() {
+  // was any
+  const result = await client`
+  SELECT classid, classname, dayoffered FROM public."classes";`;
+
+  return result;
+}
+
