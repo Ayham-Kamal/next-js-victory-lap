@@ -1,75 +1,50 @@
-"use client";
-// pages/profile-example.tsx
-
-import { useState } from "react";
 import Image from "next/image";
+import { fetchInfo, updateInfo } from "../db";
+import { redirect } from "next/navigation";
+import Link from "next/link";
 
-const ProfilePage = () => {
-  const [isPersonalOpen, setIsPersonalOpen] = useState(false);
-  const [isGeneralOpen, setIsGeneralOpen] = useState(false);
-  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
-  const [isHelpOpen, setIsHelpOpen] = useState(false);
+export default async function ProfilePage() {
+  let userInfo = (await fetchInfo(4)).at(0);
+  //console.log(userInfo?.email);
+  let Email = String(userInfo?.email);
+  let Firstname = String(userInfo?.firstname);
+  let Lastname = String(userInfo?.lastname);
+  let Weight = Number(userInfo?.weight);
+  let Gender = String(userInfo?.gender);
+  let profilePicture = "/ProfilePic.png";
 
-  const user = {
-    id: 1,
-    firstName: "Shane",
-    lastName: "Sine",
-    email: "shane.sine@gmail.com",
-    gender: "Male",
-    profilePicture: "/images.jpg", // Replace with the actual path
-    totalTime: "2h 30m",
-    caloriesBurned: 7200,
-    tasksDone: 2,
-    height: "5'9\"",
-    weight: "70 kg",
-  };
+  async function Update(formData: FormData) {
+    "use server";
+    let firstName = formData.get("firstname") as string;
+    let lastName = formData.get("lastname") as string;
+    let weight = Number(formData.get("weight"));
+    let gender = formData.get("gender") as string;
 
-  const Section = ({
-    title,
-    icon,
-    isOpen,
-    onToggle,
-    children,
-  }: {
-    title: string;
-    icon: string;
-    isOpen: boolean;
-    onToggle: () => void;
-    children: React.ReactNode;
-  }) => (
-    <>
-      <div
-        onClick={onToggle}
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          padding: "15px",
-          cursor: "pointer",
-          backgroundColor: "#fff",
-          borderBottom: "1px solid #e0e0e0",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <span style={{ fontSize: "18px", marginRight: "10px", color: "#4a90e2" }}>
-            {icon}
-          </span>
-          <p style={{ margin: "0", fontWeight: "bold", color: "#333" }}>{title}</p>
-        </div>
-        <span
-          style={{
-            fontSize: "16px",
-            color: "#4a90e2",
-            transform: isOpen ? "rotate(180deg)" : "rotate(0)",
-            transition: "transform 0.2s",
-          }}
-        >
-          ▼
-        </span>
-      </div>
-      {isOpen && <div style={{ padding: "15px", backgroundColor: "#f7f9fc" }}>{children}</div>}
-    </>
-  );
+    console.log(firstName, lastName, weight, gender);
+
+    //If user made changes, save changes to db, else, keep old data
+    if (firstName.length == 0) {
+      //console.log("Empty First");
+      firstName = Firstname;
+    }
+    if (lastName.length == 0) {
+      //console.log("Empty Last");
+      lastName = Lastname;
+    }
+    if (weight == 0) {
+      //console.log("Empty Weight");
+      weight = Weight;
+    }
+    if (gender == null) {
+      //console.log("Empty Gender");
+      gender = Gender;
+    }
+
+    updateInfo(4, firstName, lastName, weight, gender);
+    // console.log(firstName, lastName, weight, gender);
+
+    redirect("/profile");
+  }
 
   return (
     <div
@@ -80,8 +55,9 @@ const ProfilePage = () => {
         padding: "20px",
         color: "#333",
         display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
+        justifyContent: "center", // Center horizontally
+        alignItems: "center", // Center vertically
+        flexDirection: "column", // Stack elements vertically
       }}
     >
       <div
@@ -92,6 +68,10 @@ const ProfilePage = () => {
           borderRadius: "16px",
           boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
           overflow: "hidden",
+          display: "flex",
+          flexDirection: "column", // Stack child elements vertically
+          flexGrow: 1, // Allow the form content to take available space
+          justifyContent: "space-between", // Space between form and button
         }}
       >
         {/* Profile Header */}
@@ -110,176 +90,143 @@ const ProfilePage = () => {
             }}
           >
             <Image
-              src={user.profilePicture}
-              alt={`${user.firstName} ${user.lastName}`}
-              width={130}
-              height={130}
+              src={profilePicture}
+              alt={`${Firstname} ${Lastname}`}
+              width={150}
+              height={150}
               style={{
                 objectFit: "cover",
               }}
             />
           </div>
-          <h2 style={{ margin: "5px 0" }}>{`${user.firstName} ${user.lastName}`}</h2>
-          <p style={{ margin: "5px 0", color: "#777" }}>{user.email}</p>
-          <p style={{ margin: "5px 0", color: "#777" }}>Gender: {user.gender}</p>
+          <h2 style={{ margin: "5px 0" }}>{`${Firstname} ${Lastname}`}</h2>
+          <p style={{ margin: "5px 0", color: "#777" }}>{Email}</p>
+          <p style={{ margin: "5px 0", color: "#777" }}>Gender: {Gender}</p>
         </div>
 
-        {/* Stats Section */}
+        {/* Form */}
+        <form
+          action={Update}
+          className="flex flex-col space-y-4 bg-gray-50 px-4 py-8 sm:px-16"
+          style={{ flexGrow: 1 }} // Allow the form to grow and take available space
+        >
+          <div>
+            <label
+              htmlFor="firstname"
+              className="block text-xs text-gray-600 uppercase"
+            >
+              First Name
+            </label>
+            <input
+              id="firstname"
+              name="firstname"
+              type="text"
+              placeholder={Firstname}
+              className="mt-1 block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-black focus:outline-none focus:ring-black sm:text-sm"
+            />
+          </div>
+          <div>
+            <label
+              htmlFor="lastname"
+              className="block text-xs text-gray-600 uppercase"
+            >
+              Last Name
+            </label>
+            <input
+              id="lastname"
+              name="lastname"
+              type="text"
+              placeholder={Lastname}
+              className="mt-1 block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-black focus:outline-none focus:ring-black sm:text-sm"
+            />
+          </div>
+          <div>
+            <label
+              htmlFor="weight"
+              className="block text-xs text-gray-600 uppercase"
+            >
+              Weight (kg)
+            </label>
+            <input
+              id="weight"
+              name="weight"
+              type="number"
+              step="1"
+              placeholder="70"
+              className="mt-1 block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-black focus:outline-none focus:ring-black sm:text-sm"
+            />
+          </div>
+          <div>
+            <label className="block text-xs text-gray-600 uppercase">
+              Gender
+            </label>
+            <div className="mt-1 flex space-x-4">
+              <label className="flex items-center">
+                <input
+                  type="radio"
+                  name="gender"
+                  value="M"
+                  className="h-4 w-4 text-black border-gray-300 focus:ring-black"
+                />
+                <span className="ml-2 text-sm text-gray-700">Male</span>
+              </label>
+              <label className="flex items-center">
+                <input
+                  type="radio"
+                  name="gender"
+                  value="F"
+                  className="h-4 w-4 text-black border-gray-300 focus:ring-black"
+                />
+                <span className="ml-2 text-sm text-gray-700">Female</span>
+              </label>
+              <label className="flex items-center">
+                <input
+                  type="radio"
+                  name="gender"
+                  value="other"
+                  className="h-4 w-4 text-black border-gray-300 focus:ring-black"
+                />
+                <span className="ml-2 text-sm text-gray-700">Other</span>
+              </label>
+            </div>
+          </div>
+          <button
+            type="submit"
+            className="flex h-10 w-full items-center justify-center rounded-md border text-sm transition-all focus:outline-none"
+          >
+            Edit
+          </button>
+        </form>
+
+        {/* Go Back Button */}
         <div
           style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(3, 1fr)",
-            gap: "10px",
+            padding: "20px",
+            textAlign: "center",
             backgroundColor: "#f7f9fc",
-            padding: "15px",
-            borderTop: "1px solid #e0e0e0",
-            borderBottom: "1px solid #e0e0e0",
           }}
         >
-          {/* Total Time */}
-          <div
-            style={{
-              backgroundColor: "#fff",
-              padding: "10px",
-              borderRadius: "10px",
-              textAlign: "center",
-              boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-            }}
-          >
-            <p style={{ fontWeight: "bold", margin: "0", fontSize: "16px" }}>
-              {user.totalTime}
-            </p>
-            <p style={{ margin: "5px 0", color: "#777", fontSize: "14px" }}>
-              Total Time
-            </p>
-          </div>
-
-          {/* Burned */}
-          <div
-            style={{
-              backgroundColor: "#fff",
-              padding: "10px",
-              borderRadius: "10px",
-              textAlign: "center",
-              boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-            }}
-          >
-            <p style={{ fontWeight: "bold", margin: "0", fontSize: "16px" }}>
-              {user.caloriesBurned} cal
-            </p>
-            <p style={{ margin: "5px 0", color: "#777", fontSize: "14px" }}>
-              Burned
-            </p>
-          </div>
-
-          {/* Done */}
-          <div
-            style={{
-              backgroundColor: "#fff",
-              padding: "10px",
-              borderRadius: "10px",
-              textAlign: "center",
-              boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-            }}
-          >
-            <p style={{ fontWeight: "bold", margin: "0", fontSize: "16px" }}>
-              {user.tasksDone}
-            </p>
-            <p style={{ margin: "5px 0", color: "#777", fontSize: "14px" }}>
-              Done
-            </p>
-          </div>
+          <Link href="/dashboard">
+            <button
+              style={{
+                width: "100%",
+                padding: "12px",
+                backgroundColor: "#4a90e2",
+                color: "#fff",
+                border: "none",
+                borderRadius: "8px",
+                fontSize: "16px",
+                cursor: "pointer",
+                transition: "background-color 0.3s ease",
+              }}
+              // onMouseOver={(e) => (e.target.style.backgroundColor = "#357ab7")}
+              // onMouseOut={(e) => (e.target.style.backgroundColor = "#4a90e2")}
+            >
+              Go Back to Dashboard
+            </button>
+          </Link>
         </div>
-
-        {/* Settings Sections */}
-        <Section
-          title="Personal"
-          icon="👤"
-          isOpen={isPersonalOpen}
-          onToggle={() => setIsPersonalOpen(!isPersonalOpen)}
-        >
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              marginBottom: "10px",
-            }}
-          >
-            <p style={{ margin: "0", fontWeight: "bold", color: "#333" }}>
-              Height: {user.height}
-            </p>
-            <button
-              style={{
-                padding: "5px 15px",
-                backgroundColor: "#4a90e2",
-                color: "#fff",
-                border: "none",
-                borderRadius: "5px",
-                cursor: "pointer",
-                fontSize: "12px",
-                boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-              }}
-            >
-              Edit
-            </button>
-          </div>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <p style={{ margin: "0", fontWeight: "bold", color: "#333" }}>
-              Weight: {user.weight}
-            </p>
-            <button
-              style={{
-                padding: "5px 15px",
-                backgroundColor: "#4a90e2",
-                color: "#fff",
-                border: "none",
-                borderRadius: "5px",
-                cursor: "pointer",
-                fontSize: "12px",
-                boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-              }}
-            >
-              Edit
-            </button>
-          </div>
-        </Section>
-
-        <Section
-          title="General"
-          icon="⚙️"
-          isOpen={isGeneralOpen}
-          onToggle={() => setIsGeneralOpen(!isGeneralOpen)}
-        >
-          <p style={{ margin: "0", color: "#333" }}>Language: English</p>
-        </Section>
-
-        <Section
-          title="Notifications"
-          icon="🔔"
-          isOpen={isNotificationsOpen}
-          onToggle={() => setIsNotificationsOpen(!isNotificationsOpen)}
-        >
-          <p style={{ margin: "0", color: "#333" }}>Push Notifications: Enabled</p>
-        </Section>
-
-        <Section
-          title="Help"
-          icon="❓"
-          isOpen={isHelpOpen}
-          onToggle={() => setIsHelpOpen(!isHelpOpen)}
-        >
-          <p style={{ margin: "0", color: "#333" }}>FAQ: Visit our help center</p>
-        </Section>
       </div>
     </div>
   );
-};
-
-export default ProfilePage;
+}

@@ -1,5 +1,7 @@
 import { auth, signOut } from "app/auth";
 import { fetchName, fetchUserID } from "../db";
+import Link from "next/link";
+import { use } from "react";
 
 export default async function ProtectedPage() {
   let session = await auth();
@@ -17,6 +19,13 @@ export default async function ProtectedPage() {
         Hello {userName?.firstname}, {userName?.lastname}. You are logged in
         using
         {session?.user?.email} with id {userID?.id}
+        <Link
+          href={{
+            pathname: "/protected/testSecurity",
+          }}
+        >
+          Go to Destination
+        </Link>
         <SignOut />
       </div>
     </div>
