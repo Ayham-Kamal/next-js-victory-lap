@@ -84,3 +84,12 @@ export async function fetchName(userID: number) {
 
   return result;
 }
+
+// Get :
+export async function fetchClass() {
+  // was any
+  const result = await client`
+  SELECT classid, classname, dayoffered FROM public."classes";`;
+
+  return result;
+}
