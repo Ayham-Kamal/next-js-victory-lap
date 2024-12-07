@@ -78,9 +78,31 @@ export async function fetchUserID(userEmail: string) {
   return result;
 }
 
+// Get userName
 export async function fetchName(userID: number) {
   const result = await client`
   SELECT firstname, lastname FROM public."users" WHERE userid = ${userID};`;
 
   return result;
+}
+
+// Get UserData
+export async function fetchInfo(userID: number) {
+  const result = await client`
+  SELECT email, firstname, lastname, weight, gender FROM public."User" INNER JOIN public."users" 
+        ON public."User".id = public."users".userid 
+        WHERE userid = ${userID};`;
+
+  return result;
+}
+
+export async function updateInfo(
+  userID: number,
+  firstName: string,
+  lastName: string,
+  weight: number,
+  gender: string
+) {
+  await client`UPDATE public."users" SET firstname = ${firstName}, lastname = ${lastName}, weight = ${weight}, gender = ${gender}
+  WHERE userid = ${userID};`;
 }
