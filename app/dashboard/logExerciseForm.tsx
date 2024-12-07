@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 
 const workoutNamesDict: Record<string, string[]> = {
-  Chest: ["Bench Press", "Push Ups", "Pec Flies"],
+  Chest: ["Bench Press", "PushUps", "Pec Flies"],
   Back: ["Lat pulls", "Rows"],
   Shoulders: ["Shoulder Press"],
   Biceps: ["Bicep Curls"],
@@ -17,32 +17,32 @@ const workoutNamesDict: Record<string, string[]> = {
 };
 
 const workoutEquipment: Record<string, string[]> = {
-  PecFlies: ["Dumbbells"],
+  "Pec Flies": ["Dumbbells"],
   Dips: ["None"],
-  BenchPress: ["Barbell", "Dumbbells"],
+  "Bench Press": ["Barbell", "Dumbbells"],
   PushUps: ["None"],
-  BicepCurls: ["Dumbbells", "Barbell", "Cables"],
-  TricepExtensions: ["Dumbbells", "Cables"],
-  ShoulderPress: ["Dumbbells", "Barbell"],
-  Latpulls: ["Cables"],
+  "Bicep Curls": ["Dumbbells", "Barbell", "Cables"],
+  "Tricep Extensions": ["Dumbbells", "Cables"],
+  "Shoulder Press": ["Dumbbells", "Barbell"],
+  "Lat pulls": ["Cables"],
   Squats: ["Barbell", "Dumbbells"],
   Lunges: ["Dumbbells", "None"],
-  LegPress: ["Machine"],
-  CalfRaises: ["Dumbbells", "None"],
+  "Leg Press": ["Machine"],
+  "Calf Raises": ["Dumbbells", "None"],
   Deadlift: ["Barbell"],
-  HipThrusters: ["Barbell"],
+  "Hip Thrusters": ["Barbell"],
   Running: ["None"],
   Cycling: ["None"],
-  JumpRope: ["None"],
+  "Jump Rope": ["None"],
   Planks: ["None"],
   Rows: ["Machine", "Cables", "Barbell", "Dumbbells"],
-  BoxJumps: ["None"],
+  "Box Jumps": ["None"],
   Crunches: ["None"],
 };
 
 const broadToSpecific: Record<string, string[]>= {
-  UpperBody: ["Chest", "Back", "Shoulders", "Biceps", "Triceps"],
-  LowerBody: ["Quads", "Hamstrings", "Glutes", "Calves"],
+  "Upper Body": ["Chest", "Back", "Shoulders", "Biceps", "Triceps"],
+  "Lower Body": ["Quads", "Hamstrings", "Glutes", "Calves"],
   Core: ["Core"],
   FullBody: ["Full Body"],
   Cardio: ["Cardio"],
