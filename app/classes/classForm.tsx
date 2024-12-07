@@ -6,9 +6,9 @@ interface ClassFormProps {
   classid: number;
   classname: string;
   dayoffered: number;
-  timeoffered: string;
-  description: string;
-  image: string;
+  // timeoffered: string;
+  // description: string;
+  // image: string;
   isRegistered: boolean;
   onRegister: (classId: number) => void;
 }
@@ -17,9 +17,9 @@ const ClassForm: React.FC<ClassFormProps> = ({
   classid,
   classname,
   dayoffered,
-  timeoffered,
-  description,
-  image,
+  // timeoffered,
+  // description,
+  // image,
   isRegistered,
   onRegister,
 }) => {
@@ -46,7 +46,7 @@ const ClassForm: React.FC<ClassFormProps> = ({
           borderRadius: "8px",
         }}
       >
-        <Image
+        {/* <Image
           src={image}
           alt={classname}
           width={300}
@@ -56,19 +56,19 @@ const ClassForm: React.FC<ClassFormProps> = ({
             width: "100%",
             height: "100%",
           }}
-        />
+        /> */}
       </div>
       <h3 style={{ fontSize: "1.5rem", margin: "10px 0" }}>{classname}</h3>
-      <p style={{ flexGrow: 1, overflow: "hidden", textOverflow: "ellipsis", marginBottom: "10px", height: "50px" }}>
+      {/* <p style={{ flexGrow: 1, overflow: "hidden", textOverflow: "ellipsis", marginBottom: "10px", height: "50px" }}>
         {description}
-      </p>
+      </p> */}
       <p>
         <strong>Day Offered:</strong>{" "}
         {["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][dayoffered] || "Unknown"}
       </p>
-      <p>
+      {/* <p>
         <strong>Time:</strong> {timeoffered}
-      </p>
+      </p> */}
       <button
         onClick={() => onRegister(classid)}
         disabled={isRegistered}

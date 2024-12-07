@@ -7,9 +7,9 @@ interface Class {
   classid: number;
   classname: string;
   dayoffered: number;
-  timeoffered?: string;
-  description?: string;
-  image?: string;
+  // timeoffered?: string;
+  // description?: string;
+  // image?: string;
 }
 
 interface ClassesClientProps {
@@ -47,9 +47,9 @@ const ClassesClient: React.FC<ClassesClientProps> = ({ userId, classes }) => {
           classid={c.classid}
           classname={c.classname}
           dayoffered={c.dayoffered}
-          timeoffered={c.timeoffered || "N/A"}
-          description={c.description || "No description available."}
-          image={c.image || "/placeholder.jpg"}
+          // timeoffered={c.timeoffered || "N/A"}
+          // description={c.description || "No description available."}
+          // image={c.image || "/placeholder.jpg"}
           isRegistered={registeredClasses.includes(c.classid)}
           onRegister={handleRegister}
         />
