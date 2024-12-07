@@ -1,54 +1,36 @@
-// page.tsx
-"use client";
-import React, { useState } from "react";
-import { classes, userClasses } from "./mockData";
-import ClassForm from "./classForm";
+import { fetchClass } from "../db";
+import ClassesClient from "./ClassesClient";
 
-const ClassesPage: React.FC = () => {
-  const userId = 1; // Simulating a logged-in user with ID = 1
-  const [registeredClasses, setRegisteredClasses] = useState<number[]>(
-    userClasses.filter((uc) => uc.userid === userId).map((uc) => uc.classid)
-  );
+interface Class {
+  classid: number;
+  classname: string;
+  dayoffered: number;
+}
 
-  const handleRegister = (classId: number) => {
-    if (!registeredClasses.includes(classId)) {
-      userClasses.push({ userid: userId, classid: classId, daysattended: [] });
-      setRegisteredClasses((prev) => [...prev, classId]);
-      alert("Successfully registered for the class!");
-    } else {
-      alert("You are already registered for this class.");
-    }
-  };
+export default async function ClassesPage() {
+  const userId = 1; // Simulated logged-in user ID
+  let classes: Class[] = [];
+
+  try {
+    classes = await fetchClass();
+  } catch (error) {
+    console.error("Error fetching classes:", error);
+  }
 
   return (
     <div style={{ padding: "20px" }}>
-      <h1 style={{ textAlign: "center", fontSize: "2.5rem", margin: "20px 0", fontWeight: "bold" }}>
-        Fitness Classes
-      </h1>
-      <div
+      <h1
         style={{
-          display: "flex",
-          flexWrap: "wrap",
-          gap: "20px",
-          justifyContent: "center",
+          textAlign: "center",
+          fontSize: "2.5rem",
+          margin: "20px 0",
+          fontWeight: "bold",
         }}
       >
-        {classes.map((c) => (
-          <ClassForm
-            key={c.classid}
-            classid={c.classid}
-            classname={c.classname}
-            dayoffered={c.dayoffered}
-            timeoffered={c.timeoffered}
-            description={c.description}
-            image={c.image}
-            isRegistered={registeredClasses.includes(c.classid)}
-            onRegister={handleRegister}
-          />
-        ))}
-      </div>
+        Fitness Classes
+      </h1>
+      {/* Pass data to the client-side component */}
+      <ClassesClient userId={userId} classes={classes} />
     </div>
   );
-};
-
-export default ClassesPage;
+}

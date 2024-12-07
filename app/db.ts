@@ -106,3 +106,25 @@ export async function updateInfo(
   await client`UPDATE public."users" SET firstname = ${firstName}, lastname = ${lastName}, weight = ${weight}, gender = ${gender}
   WHERE userid = ${userID};`;
 }
+
+interface Class {
+  classid: number;
+  classname: string;
+  dayoffered: number;
+}
+
+
+export async function fetchClass(): Promise<Class[]> {
+  const result = await client`
+    SELECT classid, classname, dayoffered FROM public."classes";`;
+
+  // Ensure the result matches the Class interface
+  return result.map((row) => ({
+    classid: row.classid,
+    classname: row.classname,
+    dayoffered: row.dayoffered,
+  }));
+}
+
+
+

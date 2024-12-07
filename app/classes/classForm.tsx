@@ -1,4 +1,4 @@
-// ClassForm.tsx
+"use client";
 import React from "react";
 import Image from "next/image";
 
@@ -6,9 +6,9 @@ interface ClassFormProps {
   classid: number;
   classname: string;
   dayoffered: number;
-  timeoffered: string;
-  description: string;
-  image: string;
+  // timeoffered: string;
+  // description: string;
+  // image: string;
   isRegistered: boolean;
   onRegister: (classId: number) => void;
 }
@@ -17,9 +17,9 @@ const ClassForm: React.FC<ClassFormProps> = ({
   classid,
   classname,
   dayoffered,
-  timeoffered,
-  description,
-  image,
+  // timeoffered,
+  // description,
+  // image,
   isRegistered,
   onRegister,
 }) => {
@@ -35,48 +35,40 @@ const ClassForm: React.FC<ClassFormProps> = ({
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between",
-        height: "450px", // Increased height for uniformity and consistent spacing
+        height: "450px",
       }}
     >
       <div
         style={{
           width: "100%",
-          height: "180px", // Fixed height for all images
+          height: "180px",
           overflow: "hidden",
           borderRadius: "8px",
         }}
       >
-        <Image
+        {/* <Image
           src={image}
           alt={classname}
           width={300}
-          height={180} // Match height defined above
+          height={180}
           style={{
-            objectFit: "cover", // Ensures cropping for consistent dimensions
+            objectFit: "cover",
             width: "100%",
             height: "100%",
           }}
-        />
+        /> */}
       </div>
       <h3 style={{ fontSize: "1.5rem", margin: "10px 0" }}>{classname}</h3>
-      <p
-        style={{
-          flexGrow: 1,
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-          marginBottom: "10px",
-          height: "50px", // Limit description height for uniformity
-        }}
-      >
+      {/* <p style={{ flexGrow: 1, overflow: "hidden", textOverflow: "ellipsis", marginBottom: "10px", height: "50px" }}>
         {description}
-      </p>
+      </p> */}
       <p>
         <strong>Day Offered:</strong>{" "}
-        {["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][dayoffered]}
+        {["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][dayoffered] || "Unknown"}
       </p>
-      <p>
+      {/* <p>
         <strong>Time:</strong> {timeoffered}
-      </p>
+      </p> */}
       <button
         onClick={() => onRegister(classid)}
         disabled={isRegistered}
