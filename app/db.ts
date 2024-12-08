@@ -113,7 +113,6 @@ interface Class {
   dayoffered: number;
 }
 
-
 export async function fetchClass(): Promise<Class[]> {
   const result = await client`
     SELECT classid, classname, dayoffered FROM public."classes";`;
@@ -125,6 +124,3 @@ export async function fetchClass(): Promise<Class[]> {
     dayoffered: row.dayoffered,
   }));
 }
-
-
-

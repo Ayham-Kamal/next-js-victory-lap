@@ -34,13 +34,17 @@ export default async function ProtectedPage() {
 
 function SignOut() {
   return (
-    <form
-      action={async () => {
-        "use server";
-        await signOut();
-      }}
-    >
-      <button type="submit">Sign out</button>
-    </form>
+    <div>
+      <form
+        action={async () => {
+          "use server";
+          await signOut();
+        }}
+      >
+        <button type="submit">Sign out</button>
+      </form>
+
+      <Link href={"/protected/profile"}>Go to Profile</Link>
+    </div>
   );
 }

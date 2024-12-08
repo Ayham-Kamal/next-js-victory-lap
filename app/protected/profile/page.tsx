@@ -1,11 +1,14 @@
 import Image from "next/image";
-import { fetchInfo, updateInfo } from "../db";
+import { fetchInfo, updateInfo, fetchUserID } from "@/app/db";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import { auth } from "app/auth";
 
 export default async function ProfilePage() {
-  let userInfo = (await fetchInfo(4)).at(0);
-  //console.log(userInfo?.email);
+  let session = await auth();
+  let userID = (await fetchUserID(String(session?.user?.email))).at(0); // To access The object of id only
+  let userInfo = (await fetchInfo(userID?.id)).at(0);
+
   let Email = String(userInfo?.email);
   let Firstname = String(userInfo?.firstname);
   let Lastname = String(userInfo?.lastname);
@@ -20,7 +23,7 @@ export default async function ProfilePage() {
     let weight = Number(formData.get("weight"));
     let gender = formData.get("gender") as string;
 
-    console.log(firstName, lastName, weight, gender);
+    // console.log(firstName, lastName, weight, gender);
 
     //If user made changes, save changes to db, else, keep old data
     if (firstName.length == 0) {
@@ -40,10 +43,10 @@ export default async function ProfilePage() {
       gender = Gender;
     }
 
-    updateInfo(4, firstName, lastName, weight, gender);
+    updateInfo(userID?.id, firstName, lastName, weight, gender);
     // console.log(firstName, lastName, weight, gender);
 
-    redirect("/profile");
+    redirect("/protected/profile");
   }
 
   return (
