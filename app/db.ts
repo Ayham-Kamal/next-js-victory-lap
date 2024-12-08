@@ -115,7 +115,6 @@ interface Class {
   dayoffered: number;
 }
 
-
 export async function fetchClass(): Promise<Class[]> {
   const result = await client`
     SELECT classid, classname, dayoffered FROM public."classes";`;
@@ -127,44 +126,4 @@ export async function fetchClass(): Promise<Class[]> {
     dayoffered: row.dayoffered,
   }));
 }
-
-// export async function insertUserClasses(
-//   userId: number,
-//   classId: number,
-//   dateAttended: Date,
-//   daysAttended: number
-// ): Promise<boolean> {
-//   try {
-//     await client`
-//       INSERT INTO public."userclasses" (userid, classid, dateattended, daysattended)
-//       VALUES (${userId}, ${classId}, ${dateAttended}, ${daysAttended})
-//     `;
-//     return true;
-//   } catch (error) {
-//     console.error('Error inserting user class:', error);
-//     return false;
-//   }
-// }
-
-// db/userClasses.ts
-export async function insertUserClasses(
-  userId: number,
-  classId: number,
-  dateAttended: Date,
-  daysAttended: number
-): Promise<boolean> {
-  try {
-    await client`
-      INSERT INTO public."userclasses" (userid, classid, dateattended, daysattended)
-      VALUES (${userId}, ${classId}, ${dateAttended}, ${daysAttended})
-    `;
-    return true;
-  } catch (error) {
-    console.error('Error inserting user class:', error);
-    return false;
-  }
-}
-
-
-
 
