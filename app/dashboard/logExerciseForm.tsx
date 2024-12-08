@@ -40,7 +40,7 @@ const workoutEquipment: Record<string, string[]> = {
   Crunches: ["None"],
 };
 
-const broadToSpecific: Record<string, string[]>= {
+const broadToSpecific: Record<string, string[]> = {
   "Upper Body": ["Chest", "Back", "Shoulders", "Biceps", "Triceps"],
   "Lower Body": ["Quads", "Hamstrings", "Glutes", "Calves"],
   Core: ["Core"],
@@ -60,7 +60,9 @@ export function LogExerciseForm({
   const [workout, setWorkout] = useState("");
   const [equipmentOptions, setEquipmentOptions] = useState<string[]>([]);
 
-  const handleCategoryChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleCategoryChange = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
     const selectedCategory = event.target.value;
     setCategory(selectedCategory);
     setMuscleGroup("");
@@ -68,7 +70,9 @@ export function LogExerciseForm({
     setEquipmentOptions([]);
   };
 
-  const handleMuscleGroupChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleMuscleGroupChange = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
     const selectedMuscleGroup = event.target.value;
     setMuscleGroup(selectedMuscleGroup);
     setWorkout("");
@@ -221,7 +225,10 @@ export function LogExerciseForm({
 
       {/* Weight */}
       <div>
-        <label htmlFor="weight" className="block text-xs text-gray-600 uppercase">
+        <label
+          htmlFor="weight"
+          className="block text-xs text-gray-600 uppercase"
+        >
           Weight
         </label>
         <input

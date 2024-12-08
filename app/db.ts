@@ -132,6 +132,7 @@ export async function fetchClass(): Promise<Class[]> {
   }));
 }
 
+
 // export async function insertUserClasses(
 //   userId: number,
 //   classId: number,
