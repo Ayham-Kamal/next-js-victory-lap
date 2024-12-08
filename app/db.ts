@@ -1,5 +1,5 @@
 import { drizzle } from "drizzle-orm/postgres-js";
-import { pgTable, serial, varchar, numeric } from "drizzle-orm/pg-core";
+import { pgTable, serial, varchar, numeric, date, integer } from "drizzle-orm/pg-core";
 import { eq } from "drizzle-orm";
 import postgres from "postgres";
 import { genSaltSync, hashSync } from "bcrypt-ts";
@@ -60,6 +60,8 @@ async function ensureTableExists() {
 
   return table;
 }
+
+
 
 // Testing
 export async function fetchUserName() {
@@ -125,6 +127,44 @@ export async function fetchClass(): Promise<Class[]> {
     dayoffered: row.dayoffered,
   }));
 }
+
+// export async function insertUserClasses(
+//   userId: number,
+//   classId: number,
+//   dateAttended: Date,
+//   daysAttended: number
+// ): Promise<boolean> {
+//   try {
+//     await client`
+//       INSERT INTO public."userclasses" (userid, classid, dateattended, daysattended)
+//       VALUES (${userId}, ${classId}, ${dateAttended}, ${daysAttended})
+//     `;
+//     return true;
+//   } catch (error) {
+//     console.error('Error inserting user class:', error);
+//     return false;
+//   }
+// }
+
+// db/userClasses.ts
+export async function insertUserClasses(
+  userId: number,
+  classId: number,
+  dateAttended: Date,
+  daysAttended: number
+): Promise<boolean> {
+  try {
+    await client`
+      INSERT INTO public."userclasses" (userid, classid, dateattended, daysattended)
+      VALUES (${userId}, ${classId}, ${dateAttended}, ${daysAttended})
+    `;
+    return true;
+  } catch (error) {
+    console.error('Error inserting user class:', error);
+    return false;
+  }
+}
+
 
 
 
