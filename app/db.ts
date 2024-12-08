@@ -1,5 +1,12 @@
 import { drizzle } from "drizzle-orm/postgres-js";
-import { pgTable, serial, varchar, numeric, date, integer } from "drizzle-orm/pg-core";
+import {
+  pgTable,
+  serial,
+  varchar,
+  numeric,
+  date,
+  integer,
+} from "drizzle-orm/pg-core";
 import { eq } from "drizzle-orm";
 import postgres from "postgres";
 import { genSaltSync, hashSync } from "bcrypt-ts";
@@ -60,8 +67,6 @@ async function ensureTableExists() {
 
   return table;
 }
-
-
 
 // Testing
 export async function fetchUserName() {
@@ -127,3 +132,51 @@ export async function fetchClass(): Promise<Class[]> {
   }));
 }
 
+
+// export async function insertUserClasses(
+//   userId: number,
+//   classId: number,
+//   dateAttended: Date,
+//   daysAttended: number
+// ): Promise<boolean> {
+//   try {
+//     await client`
+//       INSERT INTO public."userclasses" (userid, classid, dateattended, daysattended)
+//       VALUES (${userId}, ${classId}, ${dateAttended}, ${daysAttended})
+//     `;
+//     return true;
+//   } catch (error) {
+//     console.error('Error inserting user class:', error);
+//     return false;
+//   }
+// }
+
+// db/userClasses.ts
+export async function insertUserClasses(
+  userId: number,
+  classId: number,
+  dateAttended: Date,
+  daysAttended: number
+): Promise<boolean> {
+  try {
+    await client`
+      INSERT INTO public."userclasses" (userid, classid, dateattended, daysattended)
+      VALUES (${userId}, ${classId}, ${dateAttended}, ${daysAttended})
+    `;
+    return true;
+  } catch (error) {
+    console.error("Error inserting user class:", error);
+    return false;
+  }
+}
+
+// Fetch id's of only registerd classes
+export async function fetchRegistered(userID: number) {
+  const result = await client`
+  SELECT classid FROM public."userclasses"  
+        WHERE userid = ${userID};`;
+
+  const classIdList = result.map((item) => item.classid); // I am creating a list of numbers (list of classid's)
+
+  return classIdList;
+}

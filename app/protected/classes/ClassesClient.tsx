@@ -13,10 +13,17 @@ interface Class {
 interface ClassesClientProps {
   userId: number;
   classes: Class[];
+  userClasses: number[];
 }
 
-const ClassesClient: React.FC<ClassesClientProps> = ({ userId, classes }) => {
-  const [registeredClasses, setRegisteredClasses] = useState<number[]>([]);
+const ClassesClient: React.FC<ClassesClientProps> = ({
+  userId,
+  classes,
+  userClasses,
+}) => {
+  const [registeredClasses, setRegisteredClasses] = useState<number[]>(
+    userClasses || []
+  );
 
   useEffect(() => {
     // Fetch initial registered classes for the user (optional)
@@ -32,9 +39,9 @@ const ClassesClient: React.FC<ClassesClientProps> = ({ userId, classes }) => {
           dateAttended: new Date(),
           daysAttended: 0, // Adjust as needed
         };
-  
-        console.log("Sending registration data:", requestData);  // Log data
-  
+
+        console.log("Sending registration data:", requestData); // Log data
+
         const response = await fetch("/api/classes/insertUserClasses", {
           method: "POST",
           headers: {
@@ -42,7 +49,7 @@ const ClassesClient: React.FC<ClassesClientProps> = ({ userId, classes }) => {
           },
           body: JSON.stringify(requestData),
         });
-  
+
         if (response.ok) {
           setRegisteredClasses([...registeredClasses, classId]);
           alert("Successfully registered for the class!");
@@ -59,14 +66,21 @@ const ClassesClient: React.FC<ClassesClientProps> = ({ userId, classes }) => {
   };
 
   return (
-    <div style={{ display: "flex", flexWrap: "wrap", gap: "20px", justifyContent: "center" }}>
+    <div
+      style={{
+        display: "flex",
+        flexWrap: "wrap",
+        gap: "20px",
+        justifyContent: "center",
+      }}
+    >
       {classes.map((c) => (
         <ClassForm
           key={c.classid}
           classid={c.classid}
           classname={c.classname}
           dayoffered={c.dayoffered}
-          isRegistered={registeredClasses.includes(c.classid)}
+          isRegistered={registeredClasses?.includes(c.classid) || false}
           onRegister={handleRegister}
         />
       ))}
