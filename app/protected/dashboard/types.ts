@@ -15,13 +15,12 @@ export interface Milestone {
 }
 
 export interface Exercise {
-  category: string;
-  muscle_group: string;
-  workout: string;
-  equipment: string;
-  sets: number;
-  reps: number;
-  weight: number;
+  musclename: string;
+  workoutname: string;
+  equipmentname: string;
+  setschosen: number;
+  repschosen: number;
+  weightused: number;
 }
 
 export interface DashboardData {

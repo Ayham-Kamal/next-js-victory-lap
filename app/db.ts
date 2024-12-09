@@ -10,6 +10,7 @@ import {
 import { eq } from "drizzle-orm";
 import postgres from "postgres";
 import { genSaltSync, hashSync } from "bcrypt-ts";
+import { Exercise } from "./protected/dashboard/types";
 
 // Optionally, if not using email/pass login, you can
 // use the Drizzle adapter for Auth.js / NextAuth
@@ -132,26 +133,6 @@ export async function fetchClass(): Promise<Class[]> {
   }));
 }
 
-
-// export async function insertUserClasses(
-//   userId: number,
-//   classId: number,
-//   dateAttended: Date,
-//   daysAttended: number
-// ): Promise<boolean> {
-//   try {
-//     await client`
-//       INSERT INTO public."userclasses" (userid, classid, dateattended, daysattended)
-//       VALUES (${userId}, ${classId}, ${dateAttended}, ${daysAttended})
-//     `;
-//     return true;
-//   } catch (error) {
-//     console.error('Error inserting user class:', error);
-//     return false;
-//   }
-// }
-
-// db/userClasses.ts
 export async function insertUserClasses(
   userId: number,
   classId: number,
@@ -179,4 +160,53 @@ export async function fetchRegistered(userID: number) {
   const classIdList = result.map((item) => item.classid); // I am creating a list of numbers (list of classid's)
 
   return classIdList;
+}
+
+// Fetch recent workouts
+export async function fetchRecentWorkouts(userID: number) {
+  const result =
+    (await client`SELECT musclename, workoutname, equipmentname, setschosen, repschosen, weightused  FROM public."workoutquestions" INNER JOIN public."musclegroup" 
+ON public."workoutquestions".muscleid = public."musclegroup".muscleid
+INNER JOIN public."equipment" ON public."workoutquestions".equipmentid = public."equipment".equipmentid
+WHERE userid = ${userID};`) as Exercise[];
+
+  return result;
+}
+
+// Get muscleid
+export async function fetchMuscleId(muscleName: string) {
+  const result =
+    await client`SELECT muscleid from musclegroup where musclename like ${muscleName};`;
+
+  return result;
+}
+
+// Get equipmentid
+export async function fetchEquipmentId(equipmentName: string) {
+  const result =
+    await client`SELECT equipmentid from equipment where equipmentname like ${equipmentName};`;
+
+  return result;
+}
+
+// Insert Exercise into workoutquestions
+export async function logExercise(
+  userId: number,
+  workoutname: string,
+  muscleid: number,
+  equipmentid: number,
+  weightused: number,
+  setschosen: number,
+  repschosen: number
+): Promise<boolean> {
+  try {
+    await client`
+      INSERT INTO public."workoutquestions" (userid, workoutname, muscleid, equipmentid, weightused, setschosen, repschosen)
+      VALUES (${userId}, ${workoutname}, ${muscleid}, ${equipmentid}, ${weightused}, ${setschosen}, ${repschosen})
+    `;
+    return true;
+  } catch (error) {
+    console.error("Error inserting workoutquestions:", error);
+    return false;
+  }
 }
