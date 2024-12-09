@@ -5,22 +5,28 @@ import styles from "./Dashboard.module.css";
 import { User, Stats, Milestone, Exercise } from "./types";
 import RecentWorkouts from "./recentWorkouts";
 import ClientLogExerciseForm from "./clientLogExerciseForm";
-import { fetchRecentWorkouts, fetchUserID, fetchName } from "../../db";
+import {
+  fetchRecentWorkouts,
+  fetchUserID,
+  fetchName,
+  fetchInfo,
+} from "../../db";
 import { auth } from "app/auth";
 
 // Define an asynchronous function component
 export default async function Dashboard() {
   let session = await auth();
   let userID = (await fetchUserID(String(session?.user?.email))).at(0);
-  let userInfo = (await fetchName(userID?.id)).at(0);
+  let userName = (await fetchName(userID?.id)).at(0);
+  let userInfo = (await fetchInfo(userID?.id)).at(0);
 
   // Simulate fetching data
   const mockData = {
-    user: { id: userID?.id, name: userInfo?.firstname },
+    user: { id: userID?.id, name: userName?.firstname },
     stats: {
       waterIntake: 1310,
       caloriesBurned: 2400,
-      weight: 62,
+      weight: userInfo?.weight,
     },
     milestones: {
       lifting: { progress: 77, unit: "0.77 lbs" },
