@@ -1,37 +1,31 @@
-// File: app/dashboard/page.tsx
 import React from "react";
 import Image from "next/image";
 import styles from "./Dashboard.module.css";
 import { User, Stats, Milestone, Exercise } from "./types";
 import RecentWorkouts from "./recentWorkouts";
 import ClientLogExerciseForm from "./clientLogExerciseForm";
-import {
-  fetchRecentWorkouts,
-  fetchUserID,
-  fetchName,
-  fetchInfo,
-} from "../../db";
+import { fetchRecentWorkouts, fetchUserID, fetchName } from "../../db";
 import { auth } from "app/auth";
+import Sidebar from "./Sidebar"; 
 
 // Define an asynchronous function component
 export default async function Dashboard() {
   let session = await auth();
   let userID = (await fetchUserID(String(session?.user?.email))).at(0);
-  let userName = (await fetchName(userID?.id)).at(0);
-  let userInfo = (await fetchInfo(userID?.id)).at(0);
+  let userInfo = (await fetchName(userID?.id)).at(0);
 
   // Simulate fetching data
   const mockData = {
-    user: { id: userID?.id, name: userName?.firstname },
+    user: { id: userID?.id, name: userInfo?.firstname },
     stats: {
       waterIntake: 1310,
       caloriesBurned: 2400,
-      weight: userInfo?.weight,
+      weight: 62,
     },
     milestones: {
       lifting: { progress: 77, unit: "0.77 lbs" },
-      cycling: { progress: 50, unit: "2.5 miles" },
-      running: { progress: 20, unit: "87.3 meters" },
+      cycling: { progress: 50, unit: "2.5 m" },
+      running: { progress: 20, unit: "7.3 m" },
     },
   };
 
@@ -42,39 +36,27 @@ export default async function Dashboard() {
   // console.log(recentWorkouts, "recent");
 
   return (
-    <div className={styles.dashboardContainer}>
-      <aside className={styles.sidebar}>
-        <h2>FitLife</h2>
-        <ul className={styles.navList}>
-          <li>Home</li>
-          <li>Exercise</li>
-          <li>Timer</li>
-          <li>Goal</li>
-          <li>Settings</li>
-          <li>User</li>
-          <li>Log Out</li>
-        </ul>
-      </aside>
-
+      <div className={styles.dashboardContainer}>
+      <Sidebar /> {/* Client-side Sidebar */}
       <main className={styles.mainContent}>
         <header className={styles.header}>
-          <h1>Hi, {user.name}</h1>
-          <p>Your fitness progress dashboard</p>
+          <h1 className="text-xl md:text-2xl">Hi, {user.name}</h1>
+          <p className="text-sm md:text-base">Your fitness progress dashboard</p>
           <input
-            className={styles.searchBar}
+            className="w-full md:w-1/3 p-2 border rounded-md"
             type="text"
             placeholder="Search Something"
           />
         </header>
 
-        <section className={styles.statsSection}>
+        <section
+          className={`${styles.statsSection} grid grid-cols-1 gap-4 md:grid-cols-3`}
+        >
           <StatCard title="💧 Water Intake" value={`${stats.waterIntake} ml`} />
-          <StatCard
-            title="🔥 Calories Burned"
-            value={`${stats.caloriesBurned} kcal`}
-          />
+          <StatCard title="🔥 Calories Burned" value={`${stats.caloriesBurned} kcal`} />
           <StatCard title="⚖️ Weight" value={`${stats.weight} kg`} />
         </section>
+
 
         <section className={styles.milestoneSection}>
           <h2>Daily Hustling</h2>
@@ -85,14 +67,14 @@ export default async function Dashboard() {
           </div>
         </section>
 
-        <section className={styles.exerciseSection}>
-          <div className="flex flex-row items-start justify-center space-x-6">
-            {/* Log Exercise Form */}
-            <div className="w-full max-w-md p-6 bg-white rounded-lg shadow-md">
-              <ClientLogExerciseForm userID={userID?.id} />
-            </div>
+        <section className={`${styles.exerciseSection} flex flex-col lg:flex-row items-start justify-center lg:space-x-6 space-y-4 lg:space-y-0`}>
+          {/* Log Exercise Form */}
+          <div className="w-full max-w-md p-6 bg-white rounded-lg shadow-md">
+            <ClientLogExerciseForm userID={userID?.id} />
+          </div>
 
-            {/* Recent Workouts */}
+          {/* Recent Workouts */}
+          <div className="w-full max-w-md p-6 bg-white rounded-lg shadow-md">
             <RecentWorkouts recentWorkouts={recentworkouts} />
           </div>
         </section>
