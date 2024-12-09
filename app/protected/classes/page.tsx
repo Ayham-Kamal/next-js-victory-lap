@@ -50,7 +50,7 @@ export default async function ClassesPage() {
         Fitness Classes
       </h1>
       <ClassesClient
-        userId={Number(userID)}
+        userId={userID?.id}
         classes={classes}
         userClasses={userClasses}
       />
