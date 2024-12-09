@@ -209,7 +209,7 @@ export default async function ProfilePage() {
             backgroundColor: "#f7f9fc",
           }}
         >
-          <Link href="/dashboard">
+          <Link href={{pathname: "/protected/dashboard"}}>
             <button
               style={{
                 width: "100%",

@@ -7,7 +7,7 @@ import {
 } from "../../db";
 import ClassesClient from "./ClassesClient";
 import { auth } from "app/auth";
-
+import Link from "next/link";
 interface Class {
   classid: number;
   classname: string;
@@ -31,6 +31,36 @@ export default async function ClassesPage() {
   }
 
   return (
+    <div>
+    <header>
+    <div
+          style={{
+            padding: "20px",
+            textAlign: "center",
+            backgroundColor: "#f7f9fc",
+          }}
+        >
+          <Link href={{pathname: "/protected/dashboard"}}>
+            <button
+              style={{
+                width: "20%",
+                padding: "12px",
+                backgroundColor: "#4a90e2",
+                color: "#fff",
+                border: "none",
+                borderRadius: "8px",
+                fontSize: "16px",
+                cursor: "pointer",
+                transition: "background-color 0.3s ease",
+              }}
+              // onMouseOver={(e) => (e.target.style.backgroundColor = "#357ab7")}
+              // onMouseOut={(e) => (e.target.style.backgroundColor = "#4a90e2")}
+            >
+              Go Back to Dashboard
+            </button>
+          </Link>
+        </div>
+    </header>
     <div style={{ padding: "20px" }}>
       <h1
         style={{
@@ -47,6 +77,7 @@ export default async function ClassesPage() {
         classes={classes}
         userClasses={userClasses}
       />
+    </div>
     </div>
   );
 }
