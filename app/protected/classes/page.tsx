@@ -30,13 +30,6 @@ export default async function ClassesPage() {
     console.error("Error fetching classes:", error);
   }
 
-  // Example of inserting user class (move this part server-side)
-  // You could invoke insertUserClasses here, before passing the props
-  // const success = await insertUserClasses(userId, 1, new Date(), 0); // Example usage
-  // if (success) {
-  //   console.log("User successfully registered for the class!");
-  // }
-
   return (
     <div style={{ padding: "20px" }}>
       <h1

@@ -11,7 +11,7 @@ const ClientLogExerciseForm: React.FC<ClientLogExerciseFormProps> = ({
   userID,
 }) => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+    //event.preventDefault();
 
     const formData = new FormData(event.currentTarget);
     const newWorkout = {
@@ -35,7 +35,7 @@ const ClientLogExerciseForm: React.FC<ClientLogExerciseFormProps> = ({
 
       if (response.ok) {
         alert("Exercise logged successfully!");
-        event.currentTarget.reset();
+        //event.currentTarget.reset();
       } else {
         alert("Failed to log exercise. Please try again.");
       }
