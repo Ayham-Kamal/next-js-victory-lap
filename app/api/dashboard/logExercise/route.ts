@@ -32,9 +32,9 @@ export async function POST(req: Request) {
       workoutname,
       muscleid?.muscleid,
       equipmentid?.equipmentid,
+      weightused,
       setschosen,
-      repschosen,
-      weightused
+      repschosen
     );
 
     if (success) {
