@@ -25,6 +25,7 @@ export async function POST(req: Request) {
 
     let muscleid = (await fetchMuscleId(musclename)).at(0);
     let equipmentid = (await fetchEquipmentId(equipmentname)).at(0);
+    //console.log(muscleid?.muscleid, " ", equipmentid?.equipmentid);
 
     const success = await logExercise(
       userid,
@@ -37,8 +38,10 @@ export async function POST(req: Request) {
     );
 
     if (success) {
+      console.log("success");
       return new Response("Exercise logged successfully", { status: 200 });
     } else {
+      console.log("no success");
       return new Response("Failed to log exercise", { status: 400 });
     }
   } catch (error) {

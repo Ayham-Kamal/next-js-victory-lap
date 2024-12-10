@@ -41,7 +41,8 @@ const ClientLogExerciseForm: React.FC<ClientLogExerciseFormProps> = ({
       }
     } catch (error) {
       console.error("Error logging exercise:", error);
-      alert("An error occurred. Please try again later.");
+      //console.log(error);
+      //alert("An error occurred. Please try again later.");
     }
   };
 
